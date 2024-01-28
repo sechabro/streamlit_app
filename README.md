@@ -1,4 +1,4 @@
-# streamlit_app
+# Streamlit Websocket Application
 
 In the Dockerfile there is an ENV created for "BCSV", which is the location where the "data.csv" file is being written when the application is run. It's currently set to WORKDIR, as the csv is written to the same relative location locally.
 

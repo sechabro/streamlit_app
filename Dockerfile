@@ -5,6 +5,7 @@ WORKDIR /app
 COPY ./requirements.txt .
 COPY ./server.py .
 COPY ./app.py .
+COPY ./data_sorter.py .
 COPY ./docker_run.sh .
 COPY ./key.txt .
 

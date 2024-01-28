@@ -4,5 +4,5 @@ DIR=./
 export FINN="$(cat "$INFILE")"
 
 python server.py &
-sleep 5
+sleep 10
 streamlit run app.py

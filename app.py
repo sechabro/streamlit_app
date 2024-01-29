@@ -4,7 +4,6 @@ import pandas as pd
 import streamlit as st
 data_sorter = importlib.import_module('data_sorter')
 
-price_comp = 0
 
 st.set_page_config(layout="wide")
 st.header('Binance: BTCUSDT Trade Volume', divider=True)
@@ -20,6 +19,5 @@ text_display = st.subheader(body="Current Trading Price: :green[{price:.2f}]".fo
 bar = st.bar_chart(data=sorted_data, x='Time',
                    y=['Buy Volume', 'Sell Volume'], color=["#79ea86", "#e75757"], height=500, width=1200, use_container_width=True)
 
-price_comp = price
 time.sleep(2)
 st.rerun()

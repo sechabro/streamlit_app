@@ -36,7 +36,7 @@ def sort_data(data) -> pd.DataFrame:
             new_data.loc[len(new_data)] = new_row
 
         # Returning dataframe when time_units array contains 30 unique units of time.
-        if len(time_units) == 30:
+        if len(time_units) == 70:
             return new_data
         else:
             continue

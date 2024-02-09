@@ -17,12 +17,12 @@ if sorted_data is not None:
         price=price), help="price based on most recent trade in dataset")
 
     bar = st.bar_chart(data=sorted_data, x='Time',
-                       y=['Buy Volume', 'Sell Volume'], color=["#79ea86", "#e75757"], height=600, width=1200, use_container_width=True)
+                       y=['Buy Volume', 'Sell Volume'], color=["#79ea86", "#e75757"], height=550, width=1200, use_container_width=True)
 
     time.sleep(2)
     st.rerun()
 
 else:
-    with st.spinner(text=f"Please wait while data is populating..."):
+    with st.spinner(text=f"Data populating. This usually takes around a minute"):
         time.sleep(7)
     st.rerun()

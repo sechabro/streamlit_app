@@ -11,7 +11,8 @@ COPY ./key.txt .
 
 RUN chmod +x ./docker_run.sh
 RUN pip3 install -r requirements.txt
-ENV BCSV=$WORKDIR/data.csv
+
+ENV BCSV=/app/data.csv
 EXPOSE 8501
 
 ENTRYPOINT [ "sh", "./docker_run.sh" ]

@@ -1,7 +1,7 @@
 #!/bin/bash
 INFILE=./key.txt
-DIR=./
 export FINN="$(cat "$INFILE")"
+rm ./key.txt
 
 python server.py &
 sleep 2

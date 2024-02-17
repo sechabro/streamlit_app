@@ -3,7 +3,7 @@ import json
 import csv
 import finnhub as fn
 import websockets
-from websockets.exceptions import ConnectionClosedError as cce
+from websockets.exceptions import ConnectionClosedError
 import asyncio
 import datetime
 import random
@@ -16,10 +16,11 @@ async def call_data(ws=None):
         data = await ws.recv()
         print(f'response received: {data}\n')
         return data
-    except cce as e:
+    except ConnectionClosedError as e:
         print(
             f'Connection Closed Error rcvd: {e.rcvd}, sent: {e.sent}, rts: {e.rcvd_then_sent}\nWaiting for 5 seconds...')
-        await asyncio.sleep(5)
+        message = "Error closing connection. Attempting to reconnect..."
+        return message
 
 
 async def write_data(data=None):
@@ -61,9 +62,31 @@ async def main():
             data_to_send = asyncio.create_task(call_data(ws=ws))
             await data_to_send
             data = data_to_send.result()
+
+            if data == "Error closing connection. Attempting to reconnect...":
+                raise ConnectionClosedError(
+                    rcvd=data, sent=None, rcvd_then_sent=None)
+
             send_data = asyncio.create_task(write_data(data=data))
             await send_data
             await asyncio.sleep(2)
+
+
+def loop_connect():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    try:
+        loop.create_task(main())
+        loop.run_forever()
+    except ConnectionClosedError as cce:
+        loop.stop()
+        print(f"{cce.rcvd}")
+        loop_connect()
+    except KeyboardInterrupt:
+        loop.stop()
+        print(f"\n\n------- SSE LOOP HAS BEEN STOPPED -------\n\n")
+
 
 if __name__ == "__main__":
     api_key = str(os.getenv('FINN', default=None))
@@ -74,12 +97,4 @@ if __name__ == "__main__":
         os.remove(filepath)
         print(f'\n\n-------- {filepath} REMOVED. STARTING SSE NOW -------\n\n')
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-        loop.create_task(main())
-        loop.run_forever()
-    except KeyboardInterrupt:
-        loop.stop()
-        print(f"\n\n------- SSE LOOP HAS BEEN STOPPED -------\n\n")
+    loop_connect()

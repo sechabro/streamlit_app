@@ -64,6 +64,7 @@ async def main():
             data = data_to_send.result()
 
             if data == "Error closing connection. Attempting to reconnect...":
+                asyncio.sleep(5)
                 raise ConnectionClosedError(
                     rcvd=data, sent=None, rcvd_then_sent=None)
 
@@ -72,7 +73,7 @@ async def main():
             await asyncio.sleep(2)
 
 
-def loop_connect():
+def loop_manager():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -82,7 +83,7 @@ def loop_connect():
     except ConnectionClosedError as cce:
         loop.stop()
         print(f"{cce.rcvd}")
-        loop_connect()
+        loop_manager()
     except KeyboardInterrupt:
         loop.stop()
         print(f"\n\n------- SSE LOOP HAS BEEN STOPPED -------\n\n")
@@ -97,4 +98,4 @@ if __name__ == "__main__":
         os.remove(filepath)
         print(f'\n\n-------- {filepath} REMOVED. STARTING SSE NOW -------\n\n')
 
-    loop_connect()
+    loop_manager()

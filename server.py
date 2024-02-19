@@ -70,11 +70,6 @@ async def main(start_time=None):
                 await data_to_send
                 data = data_to_send.result()
 
-                # if data.rcvd:
-                #    asyncio.sleep(5)
-                #    raise ConnectionClosedError(
-                #        rcvd=f'Connection Closed Error. Received: {data.rcvd}, Sent: {data.sent}, Received then Sent: {data.rcvd_then_sent}\n')
-
                 send_data = asyncio.create_task(write_data(data=data))
                 await send_data
                 await asyncio.sleep(2)

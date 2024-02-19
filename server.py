@@ -1,15 +1,12 @@
 import os
-from signal import SIGKILL
 import json
 import csv
 import websockets
 from websockets.exceptions import ConnectionClosedError
 import asyncio
-from asyncio import Future, InvalidStateError
 import datetime
 import random
 import time
-import sys
 
 start_time = time.time()
 

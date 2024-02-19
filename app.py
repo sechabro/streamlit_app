@@ -12,11 +12,13 @@ st.set_page_config(
 
 with st.sidebar:
     st.subheader(body="About this Websocket Application")
-    st.text_area(height=550, label='label', value='This websocket demo application displays live trading data from Binance, via the Finnhub API.'
+    st.text_area(height=550, label='label',
+                 value='This websocket demo application displays live trading data from Binance, via the Finnhub API.'
                  ' A call is made to the API every 2 seconds, the data is processed, and presented on this moving bar chart.'
                  ' The y-axis represents BTC trading volume in BTC, and the x-axis represents the time at which trading action occurred.'
                  ' The timestamps are in ascending order from right to left.'
-                 ' Data collection occurs for 3 minutes, and ceases upon reaching the time limit.', label_visibility="collapsed")
+                 ' Data collection occurs for 3 minutes, and ceases upon reaching the time limit.',
+                 label_visibility="collapsed")
 
 if sorted_data is not None:
     st.header('Binance: BTCUSDT Trade Volume', divider=True)

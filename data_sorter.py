@@ -35,7 +35,7 @@ def sort_data(data) -> pd.DataFrame:
         elif time_units.get(str(data["Time"][row_index])):
             new_data.loc[len(new_data)] = new_row
 
-        # Returning dataframe when time_units array contains 30 unique units of time.
+        # Returning dataframe when time_units array contains 50 unique units of time.
         if len(time_units) == 50:
             return new_data
         else:

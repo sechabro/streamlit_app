@@ -20,8 +20,7 @@ if sorted_data is not None:
                        y=['Buy Volume', 'Sell Volume'], color=["#79ea86", "#e75757"], height=550, width=1200, use_container_width=True)
     with st.sidebar:
         st.subheader(body="Additional Data")
-        stopbutton = st.button(
-            label="Stop Data", on_click=None, type="primary")
+        st.text(body="This is an auto-running websocket application displays live trading data from Binance, via the Finnhub API. Data collection will cease when the time limit is reached.")
     time.sleep(2)
     st.rerun()
 

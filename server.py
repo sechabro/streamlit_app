@@ -1,12 +1,17 @@
 import os
+from signal import SIGKILL
 import json
 import csv
-import finnhub as fn
 import websockets
 from websockets.exceptions import ConnectionClosedError
 import asyncio
+from asyncio import Future, InvalidStateError
 import datetime
 import random
+import time
+import sys
+
+start_time = time.time()
 
 
 async def call_data(ws=None):
@@ -17,10 +22,9 @@ async def call_data(ws=None):
         print(f'response received: {data}\n')
         return data
     except ConnectionClosedError as e:
-        print(
-            f'Connection Closed Error rcvd: {e.rcvd}, sent: {e.sent}, rts: {e.rcvd_then_sent}\nWaiting for 5 seconds...')
-        message = "Error closing connection. Attempting to reconnect..."
-        return message
+        message = "There was an error closing the websocket connection. Attempting reconnect..."
+        e.rcvd = message
+        pass
 
 
 async def write_data(data=None):
@@ -56,37 +60,55 @@ async def write_data(data=None):
         pass
 
 
-async def main():
+async def time_limit_reached():
+    return True
+
+
+async def main(start_time=None):
     async with websockets.connect(uri, ping_interval=None) as ws:
         while True:
-            data_to_send = asyncio.create_task(call_data(ws=ws))
-            await data_to_send
-            data = data_to_send.result()
+            current_time = time.time()
+            if current_time - start_time < 180:
+                data_to_send = asyncio.create_task(call_data(ws=ws))
+                await data_to_send
+                data = data_to_send.result()
 
-            if data == "Error closing connection. Attempting to reconnect...":
-                asyncio.sleep(5)
-                raise ConnectionClosedError(
-                    rcvd=data, sent=None, rcvd_then_sent=None)
+                # if data.rcvd:
+                #    asyncio.sleep(5)
+                #    raise ConnectionClosedError(
+                #        rcvd=f'Connection Closed Error. Received: {data.rcvd}, Sent: {data.sent}, Received then Sent: {data.rcvd_then_sent}\n')
 
-            send_data = asyncio.create_task(write_data(data=data))
-            await send_data
-            await asyncio.sleep(2)
+                send_data = asyncio.create_task(write_data(data=data))
+                await send_data
+                await asyncio.sleep(2)
+            else:
+                await asyncio.sleep(1)
+                return await time_limit_reached()
+
+
+def loop_close_manager(loop=None, msg=None):
+    loop.stop()
+    loop.close()
+    if loop.is_closed():
+        print(msg)
+        return True
 
 
 def loop_manager():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+    task = loop.create_task(main(start_time=start_time))
 
     try:
-        loop.create_task(main())
-        loop.run_forever()
-    except ConnectionClosedError as cce:
-        loop.stop()
-        print(f"{cce.rcvd}")
-        loop_manager()
+        loop.run_until_complete(task)
+        msg = f"\n\n------- SSE LOOP TIME LIMIT REACHED -------\n\n"
+        return loop_close_manager(loop=loop, msg=msg)
+    except ConnectionClosedError as e:
+        msg = f"\n\n------- WEBSOCKET CONNECTION CLOSE ERROR: {e.rcvd} -------\n\n"
+        return loop_close_manager(loop=loop, msg=msg)
     except KeyboardInterrupt:
-        loop.stop()
         print(f"\n\n------- SSE LOOP HAS BEEN STOPPED -------\n\n")
+        return True
 
 
 if __name__ == "__main__":

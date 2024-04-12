@@ -15,18 +15,14 @@ def sort_data(data) -> pd.DataFrame:
     new_data = pd.DataFrame({
         "Price": [],
         "Time": [],
-        "Buy Volume": [],
-        "Sell Volume": []
+        "Volume": []
     })
 
     time_units = {}
     for row_index in data.index:
         new_row = {"Price": data['Price'][row_index],
-                   "Time": data['Time'][row_index]}
-        if data["Trade Volume"][row_index] > 0:
-            new_row["Buy Volume"] = data["Trade Volume"][row_index]
-        elif data["Trade Volume"][row_index] < 0:
-            new_row["Sell Volume"] = data["Trade Volume"][row_index]
+                   "Time": data['Time'][row_index],
+                   "Volume": data["Trade Volume"][row_index]}
 
         # Adding a new row and adding timestamp to time_units if it doesn't exist already. Otherwise just adding the row.
         if not time_units.get(str(data["Time"][row_index])):

@@ -13,9 +13,9 @@ st.set_page_config(
 with st.sidebar:
     st.subheader(body="About this Websocket Application")
     st.text_area(height=550, label='label',
-                 value='This websocket demo application displays live trading data from Binance, via the Finnhub API.'
+                 value='This websocket demo application displays live BTCUSDT volume data from Binance, via the Finnhub API.'
                  ' A call is made to the API every 2 seconds, the data is processed, and presented on this moving bar chart.'
-                 ' The y-axis represents BTC trading volume in BTC, and the x-axis represents the time at which trading action occurred.'
+                 ' The y-axis represents the BTC amount traded, and the x-axis represents the time at which trade(s) occurred.'
                  ' The timestamps are in ascending order from right to left.'
                  ' Data collection occurs for 3 minutes, and ceases upon reaching the time limit.',
                  label_visibility="collapsed")
@@ -27,7 +27,7 @@ if sorted_data is not None:
         price=price), help="price based on most recent trade in dataset")
 
     bar = st.bar_chart(data=sorted_data, x='Time',
-                       y=['Buy Volume', 'Sell Volume'], color=["#79ea86", "#e75757"], height=550, width=1200, use_container_width=True)
+                       y=['Volume'], color=["#79ea86"], height=550, width=1200, use_container_width=True)
 
     time.sleep(2)
     st.rerun()

@@ -36,8 +36,8 @@ async def write_data(data=None):
                     unix_time = values[3]/1000
                     dt_value = datetime.datetime.fromtimestamp(
                         unix_time).strftime('%m-%d %H:%M:%S:%f')[:-4]
-                    trade_type = random.choice([values[4], -values[4]])
-                    value_write = [values[1], dt_value, trade_type]
+                    # trade_type = random.choice([values[4], -values[4]])
+                    value_write = [values[1], dt_value, values[4]]
                     csv_writer.writerow(str(value) for value in value_write)
         else:
             with open(filepath, "w", newline='') as file:
@@ -49,8 +49,8 @@ async def write_data(data=None):
                     unix_time = values[3]/1000
                     dt_value = datetime.datetime.fromtimestamp(
                         unix_time).strftime('%m-%d %H:%M:%S:%f')[:-4]
-                    trade_type = random.choice([values[4], -values[4]])
-                    value_write = [values[1], dt_value, trade_type]
+                    # trade_type = random.choice([values[4], -values[4]])
+                    value_write = [values[1], dt_value, values[4]]
                     csv_writer.writerow(str(value) for value in value_write)
     except TypeError as e:
         print(f'ERROR: {e}\nDATA RECEIVED: {data}')

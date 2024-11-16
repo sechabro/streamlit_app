@@ -1,6 +1,7 @@
-# Streamlit Websocket Application
+# Streamlit Cryptocurrency Live Data Feed #
 
-Dockerfile not included. Environment variable "FINN" contains Finnub API key.
+## Dockerfile Specs ##
+_Dockerfile not included. Should look like this:_
 
 ```
 FROM python:3.11-slim-bullseye
@@ -22,9 +23,8 @@ ENV HOST=0.0.0.0
 CMD streamlit run --server.port ${PORT} --server.address ${HOST} ./app.py
 ```
 
-The Dockerfile also moves a "key.txt" file into its container image. This file contains the Finnhub API key. You'll need to create this file with your own API key in order to run this app at all.
-
-Deploying to Heroku via CLI:
+## Deploying to Heroku via CLI ##
+_Heroku cli installation, and heroku app, need to be created first_
 heroku login
 heroku container:login
 heroku container:push web -a <image_name>

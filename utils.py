@@ -3,14 +3,6 @@ import psutil
 import os
 
 
-class Paths:
-    def __init__(self, currency, pid):
-        self.datacsv = str(os.getenv('BCSV', default=None))
-        self.nonstate = str(os.getenv('PIDF', default=None))
-        self.currency = currency
-        self.pid = pid
-
-
 def server_search_and_terminate(script):
     for process in psutil.process_iter():
         try:

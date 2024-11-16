@@ -2,17 +2,16 @@ FROM python:3.11-slim-bullseye
 
 WORKDIR /app
 
-COPY ./requirements.txt .
-COPY ./server.py .
-COPY ./app.py .
-COPY ./data_sorter.py .
-COPY ./docker_run.sh .
-COPY ./key.txt .
+COPY ./ .
 
-RUN chmod +x ./docker_run.sh
+RUN chmod +x ./server.py
+RUN chmod +x ./app.py
+RUN chmod +x ./utils.py
 RUN pip3 install -r requirements.txt
 
+ENV FINN="cjuvsvhr01qlmkvcs2kgcjuvsvhr01qlmkvcs2l0"
 ENV BCSV=/app/data.csv
-EXPOSE 8501
+ENV PORT=8501
+ENV HOST=0.0.0.0
 
-ENTRYPOINT [ "sh", "./docker_run.sh" ]
+CMD streamlit run --server.port ${PORT} --server.address ${HOST} ./app.py

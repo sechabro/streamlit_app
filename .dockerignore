@@ -1,0 +1,8 @@
+./data.csv
+./LICENSE
+./*.md
+./Dockerfile
+./.dockerignore
+./key.txt
+./docker_run.sh
+./.gitignore

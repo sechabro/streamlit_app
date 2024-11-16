@@ -25,8 +25,10 @@ CMD streamlit run --server.port ${PORT} --server.address ${HOST} ./app.py
 
 ## Deploying to Heroku via CLI ##
 _Heroku cli installation, and heroku app, need to be created first_
+```
 heroku login
 heroku container:login
 heroku container:push web -a <image_name>
 heroku container:release web -a <image_name>
 heroku open -a <image_name>
+```

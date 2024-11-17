@@ -1,7 +1,8 @@
 [client]
 showSidebarNavigation = false
+toolbarMode = "minimal"
 
 [theme]
 base = "dark"
-primaryColor = "#33f6cf"
+primaryColor = "#FFD700"
 font = "sans serif"

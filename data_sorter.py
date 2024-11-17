@@ -40,7 +40,7 @@ def sort_data(data) -> pd.DataFrame:
                 return new_data
             else:
                 continue
-    except AttributeError:
+    except (AttributeError, KeyError):
         return None
 
 

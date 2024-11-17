@@ -11,7 +11,6 @@ process_id = session.get("process_id")
 
 def kill_pid():
     if process_id != None and psutil.pid_exists(int(process_id)):
-        print(f"##### Killing pid {process_id} #####")
         utils.server_pid_terminate(process_id)
 
 

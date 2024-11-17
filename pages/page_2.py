@@ -6,6 +6,7 @@ utils = importlib.import_module('utils')
 data_sorter = importlib.import_module('data_sorter')
 session = st.session_state
 choice = session.get("choice")
+csv = session.get("datacsv")
 data = data_sorter.get_data()
 sorted_data = data_sorter.sort_data(data)
 
@@ -80,9 +81,9 @@ def run_page_2():
         st.rerun()
 
 
-if os.path.isfile(session.get("datacsv")) == True:
-    session_reset = check_session_reset()
-    if session_reset == False:
+session_reset = check_session_reset()
+if session_reset == False and csv != None:
+    if os.path.isfile(csv) == True:
         run_page_2()
-else:
-    csv_deleted()
+    if os.path.isfile(csv) == False:
+        csv_deleted()

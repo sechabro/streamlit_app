@@ -16,4 +16,8 @@ def server_search_and_terminate(script):
 
 
 def server_pid_terminate(pid):
-    os.kill(int(pid), signal.SIGTERM)
+    if psutil.pid_exists(int(pid)):
+        print(f"##### Killing pid {pid} #####")
+        os.kill(int(pid), signal.SIGTERM)
+    else:
+        print(f"##### pid {pid} already terminated... #####")

@@ -8,7 +8,6 @@ session = st.session_state
 choice = session.get("choice")
 csv = session.get("datacsv")
 data = data_sorter.get_data()
-sorted_data = data_sorter.sort_data(data)
 
 
 st.set_page_config(
@@ -42,6 +41,7 @@ def csv_deleted():
 
 def run_page_2():
     ####### WHEN FULL DATAFRAME IS RETURNED ######
+    sorted_data = data_sorter.sort_data(data)
     if sorted_data is not None:
         st.header(
             f'{choice} - USDT Trade Volume')

@@ -41,7 +41,6 @@ def run_server():
 def run_home_page():
     st.set_page_config(
         page_title="Live Trade Volume Data Feed - Intro", layout="centered")
-
     st.subheader(body="About this Websocket Application")
     st.text_area(height=210, label='label',
                  value='This websocket demo application displays live volume data from Binance, via the Finnhub API, for your selected cryptocurrency.'

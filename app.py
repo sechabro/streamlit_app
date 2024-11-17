@@ -44,9 +44,9 @@ def run_home_page():
     st.subheader(body="About this Websocket Application")
     st.text_area(height=210, label='label',
                  value='This websocket demo application displays live volume data from Binance, via the Finnhub API, for your selected cryptocurrency.'
-                 ' A call is made to the API every 2 seconds, the data is processed, and presented on this moving bar chart.'
-                 ' The y-axis represents the trade volume, and the x-axis represents the time at which trade(s) occurred.'
-                 ' The timestamps are in ascending order from right to left.'
+                 ' A call is made to the API every 2 seconds, the data is processed, and presented on a moving bar chart.'
+                 ' The y-axis represents a precise unit of time, and the x-axis represents the trade volume.'
+                 ' The timestamps are in descending order, and new timestamps populate from the bottom of the chart.'
                  ' Data collection occurs for 3 minutes, and ceases upon reaching the time limit.',
                  label_visibility="collapsed")
 

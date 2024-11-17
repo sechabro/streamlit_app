@@ -103,10 +103,6 @@ def loop_manager():
         return True
 
 
-def get_pid():
-    return os.getpid()
-
-
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument(

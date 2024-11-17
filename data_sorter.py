@@ -10,7 +10,7 @@ def get_data() -> pd.DataFrame:
         data = pd.read_csv(DATA_URL)
         rev_data = data[::-1]
         return rev_data
-    except pd.errors.EmptyDataError:
+    except (pd.errors.EmptyDataError, FileNotFoundError):
         return None
 
 

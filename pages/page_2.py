@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import time
+import os
 import importlib
 utils = importlib.import_module('utils')
 data_sorter = importlib.import_module('data_sorter')
@@ -13,7 +14,7 @@ sorted_data = data_sorter.sort_data(data)
 st.set_page_config(
     page_title=f"{choice} Real-Time Trade Volume Data", layout="wide")
 
-###### ERROR HANDLING FOR BROWSER REFRESH ######
+###### ERROR HANDLING FOR BROWSER REFRESH & EDGE CASE ######
 
 
 def check_session_reset():
@@ -28,6 +29,15 @@ def check_session_reset():
             st.switch_page("app.py")
     else:
         return False
+
+
+def csv_deleted():
+    container = st.container(height=60, border=False)
+    container.error(body=f"You need to choose a cryptocurrency first.\n"
+                    "Please return to the homepage and choose.", icon=":material/thumb_down:")
+    container2 = st.container(height=60, border=False)
+    if container2.button("Home"):
+        st.switch_page("app.py")
 
 
 def run_page_2():
@@ -71,6 +81,9 @@ def run_page_2():
         st.rerun()
 
 
-session_reset = check_session_reset()
-if session_reset == False:
-    run_page_2()
+if os.path.isfile(session.get("datacsv")) == True:
+    session_reset = check_session_reset()
+    if session_reset == False:
+        run_page_2()
+else:
+    csv_deleted()

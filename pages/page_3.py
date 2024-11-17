@@ -21,13 +21,13 @@ def kill_pid():
 def run_page_3():
     st.set_page_config(
         page_title=f"Live Trade Volume Data Feed - Thank You", layout="wide")
-    get_call = '''session.get("choice")'''
     col1, col2, col3 = st.columns(
         spec=[.31, .38, .31], gap="large", vertical_alignment="bottom")
     col2.header("Comments and Challenges ")
     col4, col5, col6 = st.columns(
         spec=[0.15, 0.7, 0.15], gap="large", vertical_alignment="center")
-
+    col7, col8, col9 = st.columns(
+        spec=[.15, .7, .15], gap="large", vertical_alignment="top")
     col5.write(
         f'The main challenge for this application was session data management. Streamlit has the `st.session_data` object, which works perfectly when everything is contained within the Streamlit runtime. However, I have a `server.py` script that operates outside of the Streamlit runtime. This script needs access to two arguments: its own process id, and the cryptocurrency choice from the home page. This information is added as `st.session_data["process_id"]` and `st.session_data["choice"]`, respectively.')
     col5.write(
@@ -51,6 +51,8 @@ def run_page_3():
         return f'##### Server subprocess already terminated. No PID available. #####''', language="python")
     col5.write(
         "Thanks for your time! The app's repo can be found [here](%s)" % url)
+    if col8.button("Home"):
+        st.switch_page("app.py")
 
 
 kill_pid()

@@ -1,9 +1,6 @@
 import importlib
 import streamlit as st
-import os
 import psutil
-import signal
-import time
 utils = importlib.import_module('utils')
 
 url = "https://github.com/sechabro/streamlit_app"

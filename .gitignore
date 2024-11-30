@@ -168,5 +168,3 @@ cython_debug/
 
 # Temp Files:
 data.csv
-Dockerfile
-docker_run.sh

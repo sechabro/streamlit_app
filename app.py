@@ -1,10 +1,13 @@
+from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
+from subprocess import Popen
 import importlib
 import streamlit as st
 import os
 import psutil
-from subprocess import Popen
-from streamlit.runtime.scriptrunner import add_script_run_ctx, get_script_run_ctx
+import logging
+logging.basicConfig(level=logging.INFO)
 utils = importlib.import_module('utils')
+logger = logging.getLogger(__name__)
 
 session = st.session_state
 if "choice" not in session:
@@ -61,5 +64,5 @@ def run_home_page():
 
 
 reset = process_and_file_reset()
-print(reset)
+logger.info(str(reset))
 run_home_page()

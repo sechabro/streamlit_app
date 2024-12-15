@@ -1,7 +1,10 @@
+import importlib
 import streamlit as st
 import time
 import os
-import importlib
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 utils = importlib.import_module('utils')
 data_sorter = importlib.import_module('data_sorter')
 session = st.session_state
@@ -22,7 +25,7 @@ def check_session_reset():
         container.error(body=f"Session has been reset.\n"
                         "Please return to the homepage and begin another session.", icon=":material/thumb_down:")
         kill_server = utils.server_search_and_terminate(script="server.py")
-        print(kill_server)
+        logger.info(kill_server)
         container2 = st.container(height=60, border=False)
         if container2.button("Home"):
             st.switch_page("app.py")

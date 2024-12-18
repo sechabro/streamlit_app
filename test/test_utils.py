@@ -16,6 +16,24 @@ def test_server_search_and_terminate(mock_process_iterable, mock_Process):
         script="script.py") == ' Killed process 1234 successfully.'
     mock_Process.send_signal.assert_called_once()
 
-    mock_Process.send_signal(side_effect=NoSuchProcess)
     assert server_search_and_terminate(
-        script="script.py") == '---- Server subprocess already terminated. No PID available. ----'
+        script=None) == f'---- Server subprocess already terminated. No PID available. ----'
+    assert TypeError
+
+
+@patch('os.kill')
+@patch('psutil.pid_exists')
+def test_pid_terminate(mock_pid_exists, mock_kill):
+    mock_pid = 123
+    mock_pid_exists.return_value = True
+    server_pid_terminate(pid=mock_pid)
+    mock_kill.assert_called_once()
+
+
+@patch('os.kill')
+@patch('psutil.pid_exists')
+def test_pid_terminate_fail(mock_pid_exists, mock_kill):
+    mock_pid = 123
+    mock_pid_exists.return_value = False
+    server_pid_terminate(pid=mock_pid)
+    mock_kill.assert_not_called()

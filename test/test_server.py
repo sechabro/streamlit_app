@@ -7,7 +7,7 @@ from websockets.legacy.client import Connect, WebSocketCommonProtocol
 import asyncio
 import pytest
 from asyncio import new_event_loop, set_event_loop, Task, create_task
-from server import loop_manager, loop_close_manager, ticker_choice, main, write_data, call_data, time_limit_reached
+from server.server import loop_manager, loop_close_manager, ticker_choice, main, write_data, call_data, time_limit_reached
 import time
 
 

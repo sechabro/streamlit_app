@@ -1,4 +1,4 @@
-from utils import server_pid_terminate, server_search_and_terminate
+from server.utils import server_pid_terminate, server_search_and_terminate
 from psutil import Process, process_iter, NoSuchProcess
 from unittest.mock import patch, Mock, MagicMock, mock_open
 import signal

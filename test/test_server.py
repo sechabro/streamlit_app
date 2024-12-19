@@ -1,13 +1,14 @@
 import signal
-from unittest.mock import patch, Mock, MagicMock, mock_open
+from unittest.mock import patch, Mock, MagicMock, mock_open, AsyncMock
 from json.decoder import JSONDecodeError
 from websockets.exceptions import ConnectionClosedError
 import websockets
-from websockets.legacy.client import Connect
+from websockets.legacy.client import Connect, WebSocketCommonProtocol
 import asyncio
 import pytest
-from asyncio import new_event_loop, set_event_loop, Task
-from ..server import loop_manager, loop_close_manager, ticker_choice, main, write_data, call_data, time_limit_reached
+from asyncio import new_event_loop, set_event_loop, Task, create_task
+from server import loop_manager, loop_close_manager, ticker_choice, main, write_data, call_data, time_limit_reached
+import time
 
 
 def test_ticker_choice():
@@ -67,3 +68,18 @@ async def test_call_data():
     mock_websocket.send = send
     mock_websocket.recv = recv
     assert await call_data(crypto_ticker=mock_ticker, ws=mock_websocket) == "data"
+
+
+'''@patch('asyncio.create_task')
+@patch('websockets.legacy.client.Connect')
+@pytest.mark.asyncio
+async def test_main(mock_connect, mock_create_task):
+
+    mock_connect.uri = "wss://ws.url.io"
+    mock_connect.ping_interval = None
+    mock_start_time = time.time()
+
+    with mock_connect:
+        mock_create_task.side_effect = [
+            [{"some": "data"}], [{"some more": "data"}]]
+        await main(start_time=mock_start_time)'''

@@ -4,6 +4,7 @@ from json.decoder import JSONDecodeError
 import csv
 import websockets
 from websockets.exceptions import ConnectionClosedError
+from websockets.legacy.client import connect, Connect
 import asyncio
 import datetime
 import time
@@ -44,7 +45,8 @@ async def write_data(data: str | None, filepath=None):
                 csv_writer.writerow(str(value) for value in value_write)
             return True
     except (TypeError, JSONDecodeError) as e:
-        logger.warning(f"---- RESPONSE WARNING! DATA RECEIVED: {data} ----\n{e}")
+        logger.warning(
+            f"---- RESPONSE WARNING! DATA RECEIVED: {data} ----\n{e}")
         pass
 
 
@@ -53,7 +55,8 @@ async def time_limit_reached():
 
 
 async def main(start_time=None):
-    async with websockets.connect(uri, ping_interval=None) as ws:
+    async with Connect(uri, ping_interval=None) as ws:
+        # async with websockets.connect(uri, ping_interval=None) as ws:
         while True:
             current_time = time.time()
             if current_time - start_time < 180:
@@ -61,8 +64,8 @@ async def main(start_time=None):
                     call_data(crypto_ticker=crypto_ticker, ws=ws))
                 await data_to_send
                 data = data_to_send.result()
-                print(type(data))
-                send_data = asyncio.create_task(write_data(data=data, filepath=filepath))
+                send_data = asyncio.create_task(
+                    write_data(data=data, filepath=filepath))
                 await send_data
                 await asyncio.sleep(2)
             else:

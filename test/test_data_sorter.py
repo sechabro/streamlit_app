@@ -1,6 +1,6 @@
 import pandas as pd
 from unittest.mock import patch, Mock, MagicMock, mock_open
-from ..data_sorter import get_data, sort_data, latest_price
+from data_sorter import get_data, sort_data, latest_price
 from random import choice, randint
 from string import ascii_lowercase, digits
 

@@ -6,7 +6,8 @@ import os
 import psutil
 import logging
 logging.basicConfig(level=logging.INFO)
-utils = importlib.import_module('utils')
+utils = importlib.import_module(
+    name="..server", package="streamlit_app.server")
 logger = logging.getLogger(__name__)
 
 session = st.session_state
@@ -36,7 +37,8 @@ def update_choice(choice: str | None = None):
 
 def run_server():
     ctx = get_script_run_ctx()
-    server = Popen(["python", "server.py", '-c', f'{session.get("choice")}'])
+    server = Popen(["python", "./server/server.py",
+                   '-c', f'{session.get("choice")}'])
     session["process_id"] = server.pid
     add_script_run_ctx(server, ctx)
 

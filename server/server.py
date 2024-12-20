@@ -2,9 +2,8 @@ import os
 import json
 from json.decoder import JSONDecodeError
 import csv
-import websockets
 from websockets.exceptions import ConnectionClosedError
-from websockets.legacy.client import connect, Connect
+from websockets.legacy.client import connect
 import asyncio
 import datetime
 import time
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 start_time = time.time()
 
 
-async def call_data(crypto_ticker: str, ws=None):
+async def call_data(crypto_ticker: str, ws: connect | None):
     req = '{"type":"subscribe","symbol":"BINANCE:%sUSDT"}' % crypto_ticker
     try:
         await ws.send(req)
@@ -55,8 +54,7 @@ async def time_limit_reached():
 
 
 async def main(start_time=None):
-    async with Connect(uri, ping_interval=None) as ws:
-        # async with websockets.connect(uri, ping_interval=None) as ws:
+    async with connect(uri, ping_interval=None) as ws:
         while True:
             current_time = time.time()
             if current_time - start_time < 180:

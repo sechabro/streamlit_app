@@ -10,6 +10,7 @@ import time
 import signal
 from argparse import ArgumentParser
 import logging
+from get_docker_secret import get_docker_secret
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 start_time = time.time()
@@ -32,7 +33,7 @@ async def write_data(data: str | None, filepath=None):
     try:
         message_dict = json.loads(data)
         data_response = message_dict.get("data")
-        logger.info(f"{data_response}\n")
+        # logger.info(f"{data_response}\n")
         with open(filepath, "a", newline='') as file:
             csv_writer = csv.writer(file)
             for row in data_response:
@@ -116,6 +117,7 @@ if __name__ == "__main__":
     currency_choice = args.choice
 
     api_key = str(os.getenv('FINN', default=None))
+    # api_key = get_docker_secret("api-key")
     filepath = str(os.getenv('BCSV', default=None))
     uri = f"wss://ws.finnhub.io?token={api_key}"
 

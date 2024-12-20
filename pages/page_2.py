@@ -1,3 +1,4 @@
+from server import utils, data_sorter
 import importlib
 import streamlit as st
 import time
@@ -5,8 +6,8 @@ import os
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-utils = importlib.import_module('utils')
-data_sorter = importlib.import_module('data_sorter')
+# utils = importlib.import_module('utils')
+# data_sorter = importlib.import_module('data_sorter')
 session = st.session_state
 choice = session.get("choice")
 csv = session.get("datacsv")
@@ -24,10 +25,12 @@ def check_session_reset():
         container = st.container(height=60, border=False)
         container.error(body=f"Session has been reset.\n"
                         "Please return to the homepage and begin another session.", icon=":material/thumb_down:")
-        kill_server = utils.server_search_and_terminate(script="server.py")
-        logger.info(kill_server)
         container2 = st.container(height=60, border=False)
         if container2.button("Home"):
+            logger.info(f" ----- Streamlit session has been reset. -----")
+            kill_server = utils.server_search_and_terminate(
+                script="./server/server.py")
+            logger.info(kill_server)
             st.switch_page("app.py")
     else:
         return False

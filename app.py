@@ -5,10 +5,12 @@ import streamlit as st
 import os
 import psutil
 import logging
+from server.utils import server_pid_terminate, server_search_and_terminate
+# from ..server import utils
 logging.basicConfig(level=logging.INFO)
-utils = importlib.import_module(
-    name="..server", package="streamlit_app.server")
+# utils = importlib.import_module("utils", package="server")
 logger = logging.getLogger(__name__)
+
 
 session = st.session_state
 if "choice" not in session:
@@ -26,7 +28,7 @@ def process_and_file_reset():
         ret_val.update({"csv_removed": True})
     process_id = session.get("process_id")
     if process_id != None and psutil.pid_exists(int(process_id)):
-        utils.server_pid_terminate(process_id)
+        server_pid_terminate(process_id)
         ret_val.update({"pid_kill": True})
     return ret_val
 
@@ -65,6 +67,8 @@ def run_home_page():
         st.switch_page("pages/page_2.py")
 
 
+script_kill = server_search_and_terminate(script="./server/server.py")
+logger.info(script_kill)
 reset = process_and_file_reset()
 logger.info(str(reset))
 run_home_page()

@@ -29,7 +29,7 @@ async def call_data(crypto_ticker: str, ws: connect | None):
         pass
 
 
-async def write_data(data: str | None, filepath=None):
+async def write_data(data=None, filepath=None):
     try:
         message_dict = json.loads(data)
         data_response = message_dict.get("data")
@@ -116,8 +116,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     currency_choice = args.choice
 
-    api_key = str(os.getenv('FINN', default=None))
-    # api_key = get_docker_secret("api-key")
+    # api_key = str(os.getenv('FINN', default=None))
+    api_key = get_docker_secret("api-key")
     filepath = str(os.getenv('BCSV', default=None))
     uri = f"wss://ws.finnhub.io?token={api_key}"
 

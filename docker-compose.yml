@@ -8,20 +8,24 @@ services:
     ports:
       - 8501:8501
     expose:
-      - "3000"
+      - 22
+    volumes:
+      - shared-volume:/data
 
-  server:
+  worker:
     build:
       context: ./server
       dockerfile: Dockerfile
       secrets:
         - api-key
     expose:
-      - "3000"
+      - 22
     secrets:
       - api-key
     volumes:
       - shared-volume:/server/data
+    #env_file:
+    #  - ./server/.env
 
 secrets:
   api-key:

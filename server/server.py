@@ -119,7 +119,11 @@ if __name__ == "__main__":
     # api_key = str(os.getenv('FINN', default=None))
     api_key = get_docker_secret("api-key")
     filepath = str(os.getenv('BCSV', default=None))
+    run_check = str(os.getenv('RUNC', default=None))
     uri = f"wss://ws.finnhub.io?token={api_key}"
+
+    with open(run_check, "w") as check_file:
+        check_file.write("on")
 
     with open(filepath, "w", newline='') as file:
         csv_writer = csv.writer(file)

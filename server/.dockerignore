@@ -1,0 +1,7 @@
+./data.csv
+./LICENSE
+./*.md
+./Dockerfile
+./.dockerignore
+key.txt
+.env

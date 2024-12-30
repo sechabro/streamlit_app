@@ -1,4 +1,4 @@
-from server import utils, data_sorter
+# from server import utils, data_sorter
 import importlib
 import streamlit as st
 import time
@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 # data_sorter = importlib.import_module('data_sorter')
 session = st.session_state
 choice = session.get("choice")
-csv = session.get("datacsv")
-data = data_sorter.get_data()
-
+# csv = session.get("datacsv")
+# data = data_sorter.get_data()
+data = None
 
 st.set_page_config(
     page_title=f"{choice} Real-Time Trade Volume Data", layout="wide")
@@ -28,9 +28,9 @@ def check_session_reset():
         container2 = st.container(height=60, border=False)
         if container2.button("Home"):
             logger.info(f" ----- Streamlit session has been reset. -----")
-            kill_server = utils.server_search_and_terminate(
-                script="./server/server.py")
-            logger.info(kill_server)
+            # kill_server = utils.server_search_and_terminate(
+            #    script="./server/server.py")
+            # logger.info(kill_server)
             st.switch_page("app.py")
     else:
         return False
@@ -47,12 +47,13 @@ def csv_deleted():
 
 def run_page_2():
     ####### WHEN FULL DATAFRAME IS RETURNED ######
-    sorted_data = data_sorter.sort_data(data)
+    # sorted_data = data_sorter.sort_data(data)
+    sorted_data = data
     if sorted_data is not None:
         st.header(
             f'{choice} - USDT Trade Volume')
         st.divider()
-        price = data_sorter.latest_price(sorted_data)
+        price = 1  # data_sorter.latest_price(sorted_data)
         col1, col2 = st.columns(
             spec=[0.65, 0.35], gap="large", vertical_alignment="center")
         col1.bar_chart(data=sorted_data, x='Time', y=['Volume'], color=[
@@ -87,9 +88,10 @@ def run_page_2():
         st.rerun()
 
 
-session_reset = check_session_reset()
-if session_reset == False and csv != None:
-    if os.path.isfile(csv) == True:
-        run_page_2()
-    if os.path.isfile(csv) == False:
-        csv_deleted()
+run_page_2()
+# session_reset = check_session_reset()
+# if session_reset == False and csv != None:
+# if os.path.isfile(csv) == True:
+#    run_page_2()
+# if os.path.isfile(csv) == False:
+#    csv_deleted()

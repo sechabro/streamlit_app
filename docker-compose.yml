@@ -24,8 +24,6 @@ services:
       - api-key
     volumes:
       - shared-volume:/server/data
-    #env_file:
-    #  - ./server/.env
 
 secrets:
   api-key:

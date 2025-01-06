@@ -120,6 +120,7 @@ if __name__ == "__main__":
     api_key = get_docker_secret("api-key")
     filepath = str(os.getenv('BCSV', default=None))
     run_check = str(os.getenv('RUNC', default=None))
+    print(f' file path: {filepath} and run check {run_check}')
     uri = f"wss://ws.finnhub.io?token={api_key}"
 
     with open(run_check, "w") as check_file:
@@ -129,7 +130,6 @@ if __name__ == "__main__":
         csv_writer = csv.writer(file)
         order_keys = ["Price", "Time", "Trade Volume"]
         csv_writer.writerow(order_keys)
-
     crypto_ticker = ticker_choice(choice=currency_choice)
 
     loop_manager()

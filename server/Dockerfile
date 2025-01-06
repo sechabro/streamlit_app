@@ -28,7 +28,7 @@ COPY ./ .
 
 # Setting permissions for the user
 RUN chown -R streamlit:streamlit ./data
-RUN chmod +x ./server.py && chmod +x ./data_sorter.py && chmod +x ./utils.py && pip3 install -r requirements.txt
+RUN chmod +x ./server.py && chmod +x ./utils.py && pip3 install -r requirements.txt
 
 
 # Start SSH server

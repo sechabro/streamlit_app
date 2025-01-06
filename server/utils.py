@@ -18,8 +18,9 @@ def server_pid_terminate(pid):
     if psutil.pid_exists(int(pid)):
         logger.info(f" Terminating server script process id {pid}.")
         os.kill(int(pid), signal.SIGTERM)
+        logger.info(f" Terminated server process {pid} successfully.")
     else:
-        logger.info(f"pid {pid} already terminated... ----")
+        logger.info(f" Process {pid} already terminated...")
 
 
 def server_search_and_terminate(script=None):
@@ -31,7 +32,6 @@ def server_search_and_terminate(script=None):
                 pid = process_info.get("pid")
                 server_pid_terminate(pid=pid)
                 run_check_off()
-                logger.info(" Terminated server run successfully.")
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess, TypeError):
             continue
     return f'---- No server subprocess to terminate. Server has either already been terminated, or the app is running for the first time. ----'
@@ -40,7 +40,8 @@ def server_search_and_terminate(script=None):
 def main(func=None, funcarg=None):
     if func == "search":
         server_search_and_terminate(script=funcarg)
-
+    if func == "pid":
+        server_pid_terminate(pid=funcarg)
 
 if __name__ == "__main__":
     parser = ArgumentParser()

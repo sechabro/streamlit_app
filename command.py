@@ -1,17 +1,18 @@
 import logging
 import paramiko
+from get_docker_secret import get_docker_secret
 import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 run_check = str(os.getenv('RUNC', default=None))
 filepath = str(os.getenv('BCSV', default=None))
+strmltpwd = get_docker_secret("streamlit")
 
 def send_worker_command(command: str | None = None):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     cmd_list = command.split()
-    ssh.connect(hostname="172.19.0.3", port=22,
-                username="streamlit", password="streamlit")
+    ssh.connect(hostname="172.19.0.3", port=22, username="streamlit", password=strmltpwd)
     stdin, stdout, stderr = ssh.exec_command(command=command)
     if "nohup" not in cmd_list:
         errors = stderr.read().decode('utf-8').strip()

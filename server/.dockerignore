@@ -4,4 +4,5 @@
 ./Dockerfile
 ./.dockerignore
 key.txt
+streamlit.txt
 .env

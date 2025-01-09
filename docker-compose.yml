@@ -9,6 +9,8 @@ services:
       - 8501:8501
     expose:
       - 22
+    secrets:
+      - streamlit
     volumes:
       - shared-volume:/data
 
@@ -28,6 +30,8 @@ services:
 secrets:
   api-key:
     file: ./server/key.txt
+  streamlit:
+    file: ./server/streamlit.txt
 
 volumes:
   shared-volume:

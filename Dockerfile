@@ -23,6 +23,5 @@ RUN chmod +x ./app.py && chmod +x ./data_sorter.py && chmod +x ./command.py && p
 ENV BCSV=/data/data.csv
 ENV RUNC=/data/server_check.txt
 ENV PORT=8501
-ENV HOST=0.0.0.0
 
-CMD streamlit run --server.port ${PORT} --server.address ${HOST} ./app.py
+CMD streamlit run --server.port ${PORT} ./app.py

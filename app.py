@@ -14,6 +14,7 @@ if "choice" not in session:
 if "datacsv" not in session:
     session["datacsv"] = str(os.getenv('BCSV', default=None))
 
+
 def update_choice(choice: str | None = None):
     session["choice"] = choice
 
@@ -24,7 +25,8 @@ def update_choice(choice: str | None = None):
 #    session["process_id"] = server.pid
 #    add_script_run_ctx(server, ctx)
 
-#def run_home_page():
+
+# def run_home_page():
 st.set_page_config(
     page_title="Live Trade Volume Data Feed - Intro", layout="centered")
 st.subheader(body="About this Websocket Application")
@@ -43,6 +45,6 @@ if next_button:
     server_run_check()
     delete_csv()
     send_worker_command(
-        command=f'nohup python /server/server.py -c {session.get("choice")} &')
+        command=f'nohup python /server/server.py -c {session.get("choice")}')
     time.sleep(.25)
     st.switch_page("pages/page_2.py")

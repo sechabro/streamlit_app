@@ -11,6 +11,7 @@ import signal
 from argparse import ArgumentParser
 import logging
 from get_docker_secret import get_docker_secret
+import base64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 start_time = time.time()
@@ -116,11 +117,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
     currency_choice = args.choice
 
-    # api_key = str(os.getenv('FINN', default=None))
-    api_key = get_docker_secret("api-key")
+    secret = get_docker_secret("api-key")
+    base64_bytes = secret.encode("ascii")
+    secret_bytes = base64.b64decode(base64_bytes)
+    api_key = secret_bytes.decode("ascii")
+
     filepath = str(os.getenv('BCSV', default=None))
     run_check = str(os.getenv('RUNC', default=None))
-    print(f' file path: {filepath} and run check {run_check}')
+
     uri = f"wss://ws.finnhub.io?token={api_key}"
 
     with open(run_check, "w") as check_file:

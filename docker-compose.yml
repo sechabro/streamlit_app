@@ -13,6 +13,8 @@ services:
       - streamlit
     volumes:
       - shared-volume:/data
+    depends_on:
+      - worker
 
   worker:
     build:

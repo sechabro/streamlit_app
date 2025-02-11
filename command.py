@@ -2,17 +2,24 @@ import logging
 import paramiko
 from get_docker_secret import get_docker_secret
 import os
+import base64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 run_check = str(os.getenv('RUNC', default=None))
 filepath = str(os.getenv('BCSV', default=None))
-strmltpwd = get_docker_secret("streamlit")
+
+strmltpwde = get_docker_secret("streamlit")
+base64_bytes = strmltpwde.encode("ascii")
+secret_bytes = base64.b64decode(base64_bytes)
+strmltpwd = secret_bytes.decode("ascii")
+
 
 def send_worker_command(command: str | None = None):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     cmd_list = command.split()
-    ssh.connect(hostname="172.19.0.3", port=22, username="streamlit", password=strmltpwd)
+    ssh.connect(hostname="172.19.0.2", port=22,
+                username="streamlit", password=strmltpwd)
     stdin, stdout, stderr = ssh.exec_command(command=command)
     if "nohup" not in cmd_list:
         errors = stderr.read().decode('utf-8').strip()
@@ -22,13 +29,15 @@ def send_worker_command(command: str | None = None):
     logger.info(" Command sent. SSH closed.")
     return
 
+
 def delete_csv():
-        if os.path.exists(filepath) == True:
-            logger.info(" Deleting csv file...")
-            send_worker_command(
-                command="rm /server/data/data.csv")
-        elif os.path.exists(filepath) == False:
-            logger.info(f' No csv file to delete.')
+    if os.path.exists(filepath) == True:
+        logger.info(" Deleting csv file...")
+        send_worker_command(
+            command="rm /server/data/data.csv")
+    elif os.path.exists(filepath) == False:
+        logger.info(f' No csv file to delete.')
+
 
 def server_run_check():
     try:

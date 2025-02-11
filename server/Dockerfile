@@ -22,7 +22,7 @@ COPY ./ .
 
 # Create a user and set password.
 RUN useradd -m -s /bin/bash streamlit
-RUN echo "streamlit:$(cat ./streamlit.txt)" | chpasswd
+RUN echo "streamlit:$(cat ./streamlit.txt | base64 -d)" | chpasswd
 
 # Setting directory permissions for the user
 RUN chown -R streamlit:streamlit ./data

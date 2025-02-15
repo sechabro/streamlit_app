@@ -2,9 +2,10 @@ name: streamlit_app
 
 services:
   web:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    #build:
+    #  context: ./
+    #  dockerfile: Dockerfile
+    image: streamlitweb:latest
     ports:
       - 11443:8501
     expose:
@@ -18,11 +19,12 @@ services:
       - worker
 
   worker:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-      secrets:
-        - api-key
+    #build:
+    #  context: ./server
+    #  dockerfile: Dockerfile
+    #  secrets:
+    #    - api-key
+    image: streamlitworker:latest
     expose:
       - 22
     secrets:

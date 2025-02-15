@@ -12,36 +12,102 @@ st.set_page_config(
     page_title=f"Live Trade Volume Data Feed - Thank You", layout="wide")
 col1, col2, col3 = st.columns(
     spec=[.31, .38, .31], gap="large", vertical_alignment="bottom")
-col2.header("Comments and Challenges ")
+col2.header("How the App Works")
 col4, col5, col6 = st.columns(
     spec=[0.15, 0.7, 0.15], gap="large", vertical_alignment="center")
 col7, col8, col9 = st.columns(
     spec=[.15, .7, .15], gap="large", vertical_alignment="top")
 col5.write(
-    f'The main challenge for this application was session data management. Streamlit has the `st.session_data` object, which works perfectly when everything is contained within the Streamlit runtime. However, I have a `server.py` script that operates outside of the Streamlit runtime. This script needs access to two arguments: its own process id, and the cryptocurrency choice from the home page. This information is added as `st.session_data["process_id"]` and `st.session_data["choice"]`, respectively.')
+    f'This is a two-container application. A web container, which displays all data using the Streamlit library, and a worker container, which serves data, and in which commands are run by the web container. user/password credentials have been created in the worker container. The web container uses these credentials to SSH into the worker container and run commands.'
+)
 col5.write(
-    'For `script.py` to gain access to the cryptocurrency choice, I ran it as a subprocess, and fed the choice as an argument in the run command, as shown on line 3 of the code snippet below.')
-col5.code('''def run_server():
-ctx = get_script_run_ctx()
-server = Popen(["python", "server.py", '-c', f'{session.get("choice")}'])
-session["process_id"] = server.pid
-add_script_run_ctx(server, ctx)''', language="python")
-col5.write('To autokill `server.py` in the edge case of a refresh of page 2, a utility function iterates through all processes until it finds process id for the script, and then terminates it using the process id:')
-col5.code('''
-def server_search_and_terminate(script):
+    f'When a user selects a currency, and clicks the `Next` button, a command is constructed, and secrets are gathered to prepare for SSH login:'
+)
+col5.code(
+    '''inputs = get_docker_secret("input") # <-- An encoded string which is read via a file during docker compose.
+inputs_list = inputs.split("&X4") # <-- Splitting the string at this block. Normally, the block should be hidden.
+decoded_inputs = []
+for item in inputs_list:
+    base64_bytes = item.encode("ascii")
+    secret_bytes = base64.b64decode(base64_bytes)
+    decoded_item = secret_bytes.decode("ascii")
+    decoded_inputs.append(decoded_item)
+
+# Doing the same thing here as above.
+strmltpwde = get_docker_secret("streamlit")
+base64_bytes = strmltpwde.encode("ascii")
+secret_bytes = base64.b64decode(base64_bytes)
+strmltpwd = secret_bytes.decode("ascii")''', language="python"
+)
+col5.write(
+    f'With the secrets split and decoded, the web container is ready to SSH into the worker container and run commands. Using the Paramiko library to do so, the function below is then called:'
+)
+
+# col5.write(
+#    f'The main challenge for this application was session data management. Streamlit has the `st.session_data` object, which works perfectly when everything is contained within the Streamlit runtime. However, I have a `server.py` script that operates outside of the Streamlit runtime. This script needs access to two arguments: its own process id, and the cryptocurrency choice from the home page. This information is added as `st.session_data["process_id"]` and `st.session_data["choice"]`, respectively.')
+# col5.write(
+#    'For `script.py` to gain access to the cryptocurrency choice, I ran it as a subprocess, and fed the choice as an argument in the run command, as shown on line 3 of the code snippet below.')
+col5.code('''def send_worker_command(command: str | None = None):
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) # <-- Basic auth, so we prevent a missing key exception.
+    cmd_list = command.split()
+    ssh.connect(hostname=decoded_inputs[0], port=22,
+                username=decoded_inputs[1], password=strmltpwd)
+    stdin, stdout, stderr = ssh.exec_command(command=command)
+          
+    # The worker container is on a 3-minute timer, so we need to be able to logout of the SSH session without having
+    # to wait for the process to complete. Therefore, we check if `nohup` is included in the constructed command.
+    # If it's not included, we can wait for the stderr readout of the process.
+    if "nohup" not in cmd_list:
+        errors = stderr.read().decode('utf-8').strip()
+        logger.info(
+            f' Command Status: {errors if errors else "No errors to log."}')
+    ssh.close()
+    logger.info(" Command sent. SSH closed.")
+    return''', language="python")
+col5.write('To autokill worker container processes in the event of a return to the home page, a refresh of page_2, or an advance to this page, first a check is run to see if the server process is running in the worker container:')
+col5.code(
+    '''def server_run_check():
+    try:
+        # We don't want to iterate through container processes every time this check is run. So there is a check file
+        # that is read first.
+        run_check_file = open(run_check, "r")
+        if os.path.exists(run_check) == True:
+            if run_check_file.read() == "on":
+                logger.info(" Server is still running. Shutting down now...")
+
+                # Intentionally over-engineering this command. At the moment, only the server runs in the worker
+                # container. However, if there are more processes to search for, here is where the process would
+                # be specified.
+                send_worker_command(
+                    command="python /server/utils.py -f search -fa /server/server.py")
+            if run_check_file.read() == "off":
+                logger.info(" Server has already been shut down.")
+        else:
+            pass
+
+    # If the application is being started for the first time, the function will throw an exception since the check
+    # file doesn't exist yet. This is the bypass for that exception.
+    except FileNotFoundError:
+        logger.info(" No check file detected. Creating...")'''
+)
+col5.write(
+    f'And finally, the following is how server process is terminated:'
+)
+col5.code('''def server_search_and_terminate(script=None):
     for process in psutil.process_iter():
         try:
             process_info = process.as_dict(attrs=['pid', 'name', 'cmdline'])
-            if process_info["name"] == "Python" and script in process_info["cmdline"]:
-                process.send_signal(signal.SIGTERM)
-                return f'##### Killed process {process_info.get("pid")} successfully. #####'
+            if script in process_info["cmdline"] and "-c" in process_info["cmdline"]:
+                logger.info(" Script found...")
+                pid = process_info.get("pid")
+                server_pid_terminate(pid=pid)
+                run_check_off()
+                return # <-- If we found and terminated our worker's server process, no need to continue.
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess, TypeError):
             continue
-    return f'##### Server subprocess already terminated. No PID available. #####''', language="python")
+    return f'No server subprocess to terminate. Is the app running for the first time?''', language="python")
 col5.write(
-    "Thanks for your time! The app's repo can be found [here](%s)" % url)
+    "If necessary, I can go into greater detail over a call. Thanks for your time! The app's repo can be found [here](%s)" % url)
 if col8.button("Home"):
     st.switch_page("app.py")
-
-
-

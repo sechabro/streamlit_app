@@ -4,7 +4,7 @@ import importlib
 import streamlit as st
 import time
 import os
-from command import send_worker_command, server_run_check, delete_csv
+from command import server_run_check, delete_csv
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,6 +18,8 @@ st.set_page_config(
     page_title=f"{choice} Real-Time Trade Volume Data", layout="wide")
 
 ###### ERROR HANDLING FOR BROWSER REFRESH & EDGE CASE ######
+
+
 def session_reset_page_2():
     container = st.container(height=60, border=False)
     container.error(body=f"Session has been reset.\n"
@@ -33,7 +35,8 @@ def session_reset_page_2():
 
 
 def csv_deleted_page_2():
-        pass
+    pass
+
 
 def run_page_2():
     if os.path.exists(csv) == False:
@@ -86,7 +89,8 @@ def run_page_2():
                 time.sleep(7)
             st.rerun()
 
+
 if choice == None:
-    session_reset_page_2()    
+    session_reset_page_2()
 else:
     run_page_2()

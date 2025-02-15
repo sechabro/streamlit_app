@@ -32,6 +32,7 @@ def server_search_and_terminate(script=None):
                 pid = process_info.get("pid")
                 server_pid_terminate(pid=pid)
                 run_check_off()
+                return
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess, TypeError):
             continue
     return f'---- No server subprocess to terminate. Server has either already been terminated, or the app is running for the first time. ----'
@@ -42,6 +43,7 @@ def main(func=None, funcarg=None):
         server_search_and_terminate(script=funcarg)
     if func == "pid":
         server_pid_terminate(pid=funcarg)
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()

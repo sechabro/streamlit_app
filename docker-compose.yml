@@ -11,6 +11,7 @@ services:
       - 22
     secrets:
       - streamlit
+      - input
     volumes:
       - shared-volume:/data
     depends_on:
@@ -34,6 +35,8 @@ secrets:
     file: ./server/key.txt
   streamlit:
     file: ./server/streamlit.txt
+  input:
+    file: ./input.txt
 
 volumes:
   shared-volume:

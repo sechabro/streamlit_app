@@ -7,7 +7,7 @@ services:
     #  dockerfile: Dockerfile
     image: sechadesu/streamlitweb:latest
     ports:
-      - 11443:8502
+      - 11443:8501
     expose:
       - 22
     secrets:

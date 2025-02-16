@@ -5,9 +5,9 @@ services:
     #build:
     #  context: ./
     #  dockerfile: Dockerfile
-    image: streamlitweb:latest
+    image: sechadesu/streamlitweb:latest
     ports:
-      - 11443:8501
+      - 11443:8502
     expose:
       - 22
     secrets:
@@ -24,7 +24,7 @@ services:
     #  dockerfile: Dockerfile
     #  secrets:
     #    - api-key
-    image: streamlitworker:latest
+    image: sechadesu/streamlitworker:latest
     expose:
       - 22
     secrets:

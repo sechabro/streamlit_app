@@ -6,3 +6,11 @@ toolbarMode = "minimal"
 base = "dark"
 primaryColor = "#FFD700"
 font = "sans serif"
+
+[server]
+port = 8502
+headless = true
+
+[browser]
+serverAddress = "datafeeddemo.seanbrown.org"
+serverPort = 8502

@@ -16,6 +16,7 @@ COPY ./data_sorter.py .
 COPY ./pages ./pages
 COPY ./requirements.txt .
 COPY ./__init__.py .
+COPY ./img ./img
 
 RUN chmod +x ./app.py && chmod +x ./data_sorter.py && chmod +x ./command.py && pip3 install -r requirements.txt
 

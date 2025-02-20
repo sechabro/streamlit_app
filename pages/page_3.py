@@ -18,11 +18,14 @@ col4, col5, col6 = st.columns(
 col7, col8, col9 = st.columns(
     spec=[.15, .7, .15], gap="large", vertical_alignment="top")
 col5.write(
-    f'This is a two-container application. A web container, which displays all data using the Streamlit library, and a worker container, which serves data, and in which commands are run by the web container. user/password credentials have been created in the worker container. The web container uses these credentials to SSH into the worker container and run commands.'
+    f'This is a two-container application. A web container, which displays all data, and a worker container, which serves the data. The web container uses basic auth credentials to SSH into the worker container and run commands. Below is a high-level view of the deployment infrastructure.'
 )
+col5.image(image="./img/app_deployment_infrastructure.png",
+           caption="deployment infrastructure")
 col5.write(
     f'When a user selects a currency, and clicks the `Next` button, a command is constructed, and secrets are gathered to prepare for SSH login:'
 )
+
 col5.code(
     '''inputs = get_docker_secret("input") # <-- An encoded string which is read via a file during docker compose.
 inputs_list = inputs.split("&X4") # <-- Splitting the string at this block. Normally, the block should be hidden.
@@ -42,11 +45,6 @@ strmltpwd = secret_bytes.decode("ascii")''', language="python"
 col5.write(
     f'With the secrets split and decoded, the web container is ready to SSH into the worker container and run commands. Using the Paramiko library to do so, the function below is then called:'
 )
-
-# col5.write(
-#    f'The main challenge for this application was session data management. Streamlit has the `st.session_data` object, which works perfectly when everything is contained within the Streamlit runtime. However, I have a `server.py` script that operates outside of the Streamlit runtime. This script needs access to two arguments: its own process id, and the cryptocurrency choice from the home page. This information is added as `st.session_data["process_id"]` and `st.session_data["choice"]`, respectively.')
-# col5.write(
-#    'For `script.py` to gain access to the cryptocurrency choice, I ran it as a subprocess, and fed the choice as an argument in the run command, as shown on line 3 of the code snippet below.')
 col5.code('''def send_worker_command(command: str | None = None):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) # <-- Basic auth, so we prevent a missing key exception.

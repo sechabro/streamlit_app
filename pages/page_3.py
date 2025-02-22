@@ -18,7 +18,7 @@ col4, col5, col6 = st.columns(
 col7, col8, col9 = st.columns(
     spec=[.15, .7, .15], gap="large", vertical_alignment="top")
 col5.write(
-    f'This is a two-container application. A web container, which displays all data, and a worker container, which serves the data. The web container uses basic auth credentials to SSH into the worker container and run commands. Below is a high-level view of the deployment infrastructure.'
+    f'This is a two-container application. A web container, which displays all data, and a worker container, which serves the data. The web container uses basic auth credentials to SSH into the worker container and run commands. A shared volume is implemented for the worker container to write to, and the web container to read from. Below is a high-level view of the deployment infrastructure.'
 )
 col5.image(image="./img/app_deployment_infrastructure.png",
            caption="deployment infrastructure")
